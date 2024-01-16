@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API</title>
+    <style>
+      body {
+        background-color: rgb(178, 241, 241);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        gap: 25px;
+      }
+
+      #searchBar {
+        position: relative;
+        top: 0;
+        width: 300px;
+        height: 25px;
+      }
+
+      #box {
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #title {
+        font-size: 20px;
+        font-weight: bold;
+        color: rgb(15, 20, 99);
+      }
+
+      #testImage {
+        width: 250px;
+        height: 250px;
+      }
+
+      #container {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      #description {
+        width: 250px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>NASA API PROJECT</h1>
+    <input type="text" id="searchBar" placeholder="search" />
+    <div id="container"></div>
+    <script>
+      let input = document.getElementById("searchBar");
+      let search = input;
+      let container = document.getElementById("container");
+      let x = 0;
+
+      window.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          searching();
+        }
+      });
+
+      function searching() {
+        if (input.value != "") {
+          container.innerHTML = "";
+          x += 1;
+          fetch(`https://images-api.nasa.gov/search?q=${search.value}`)
+            .then((response) => response.json())
+            .then((data) => {
+              for (let i = 0; i < 100; i++) {
+                let title = data.collection.items[i].data[0].title;
+                let image = data.collection.items[i].links[0].href;
+                let description = data.collection.items[i].data[0].description;
+
+                let box = document.createElement("div");
+                box.id = "box";
+                container.appendChild(box);
+
+                let titles = document.createElement("p");
+                titles.id = "title";
+                box.appendChild(titles);
+
+                let testImage = document.createElement("img");
+                testImage.id = "testImage";
+                box.appendChild(testImage);
+
+                let descriptions = document.createElement("p");
+                descriptions.id = "description";
+                box.appendChild(descriptions);
+
+                testImage.src = image;
+                titles.innerHTML = title;
+                descriptions.innerHTML = description;
+              }
+            });
+        }
+      }
+    </script>
+  </body>
+</html>
